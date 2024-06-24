@@ -8,7 +8,15 @@ import { useToast } from "@/components/ui/use-toast";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 // SCHEMA
 const formSchema = z.object({
@@ -35,6 +43,25 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <h2 className="text-center text-2xl-font-semibold my-8 text-stone-900">React Hook Form</h2>
+      {/* FORM */}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="spacy-y-4">
+          <FormField
+            name="username"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel></FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
     </main>
   );
 }
