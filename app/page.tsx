@@ -18,9 +18,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import { useZustand } from "./store";
+
 // SCHEMA
 const formSchema = z.object({
-  username: z.string().min(2).max(50),
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
 });
 
 export default function Home() {
@@ -32,11 +36,20 @@ export default function Home() {
     defaultValues: { username: "" },
   });
 
+  // ZUSTAND store
+  const username = useZustand((state) => state.username);
+  const updateUser = useZustand((state) => state.updateUser);
+
   // SUBMIT function
   function onSubmit(values: z.infer<typeof formSchema>) {
+    updateUser(values.username);
+  }
+
+  // toast data stored in zustand
+  function onToast() {
     toast({
-      title: "Submitted!",
-      description: `${values}`,
+      title: `${username}`,
+      description: "This is your zustand store data.",
     });
   }
 
@@ -45,23 +58,31 @@ export default function Home() {
       <h2 className="text-center text-2xl-font-semibold my-8 text-stone-900">React Hook Form</h2>
       {/* FORM */}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="spacy-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="spacy-y-4 flex flex-col">
           <FormField
             name="username"
             control={form.control}
             render={({ field }) => (
-              <FormItem>
-                <FormLabel></FormLabel>
+              <FormItem className="flex flex-col items-center">
+                <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} placeholder="shadcn" />
                 </FormControl>
-                <FormDescription></FormDescription>
+                <FormDescription className="text-xs">
+                  This is your public display name.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+          <Button type="submit" className="m-2">
+            Submit
+          </Button>
         </form>
       </Form>
+      <Button variant="outline" className="w-44 bg-slate-100" onClick={() => onToast()}>
+        Toast
+      </Button>
     </main>
   );
 }
